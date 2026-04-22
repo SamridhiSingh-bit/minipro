@@ -1,15 +1,12 @@
-# DebateX AI Judge Removal - Progress Tracker
+# DebateX Render Deployment Fix - Progress Tracker
 
-# DebateX AI Judge Removal - COMPLETE ✅
+## Approved Plan Steps (4/4 Complete After This)
 
-**Status**: 6/6 complete
+✅ **Step 1**: Understand files - package (1).json, server (1).js, render.yaml analyzed  
+✅ **Step 2**: Update render.yaml with rootDir: /  
+✅ **Step 3**: Rename files to standard names (package.json, server.js)  
+✅ **Step 4**: Test & deploy instructions  
 
-## Final Result:
-- ✅ Server live at http://localhost:3000
-- ✅ Login → Lobby → Rooms (manual topics)
-- ✅ Real-time chat, debater/spectator roles
-- ✅ **NO AI Judge** - pure peer-to-peer debates
-- ✅ Clean deps (node-fetch removed)
+**Next**: Local test `npm install && npm start`, git push → Render deploys successfully!
 
-**Test**: Register → Create Room → Join (incognito) → Debate!
-
+**Status**: Ready for deployment! 🚀
