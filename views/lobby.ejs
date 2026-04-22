@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DebateX — Lobby</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #E63946;
+      --dark: #0a0a0a;
+      --mid: #141414;
+      --card: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #f0ede8;
+      --muted: #888;
+      --gold: #C9A84C;
+      --green: #2ECC71;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(230,57,70,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(230,57,70,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(12px);
+    }
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 4px;
+    }
+    .logo span { color: var(--red); }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .avatar {
+      width: 32px; height: 32px;
+      background: var(--red);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1rem;
+      color: white;
+    }
+    .logout-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 24px;
+    }
+    .page-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 48px;
+    }
+    .page-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      letter-spacing: 2px;
+      line-height: 1;
+    }
+    .page-title span { color: var(--red); }
+    .page-sub { color: var(--muted); margin-top: 8px; font-size: 0.9rem; }
+
+    .create-btn {
+      background: var(--red);
+      color: white;
+      border: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 3px;
+      padding: 14px 28px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.1s;
+      white-space: nowrap;
+    }
+    .create-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+    .section-label {
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .rooms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .room-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 28px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .room-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--border);
+      transition: background 0.2s;
+    }
+    .room-card:hover { border-color: #444; transform: translateY(-2px); }
+    .room-card:hover::before { background: var(--red); }
+
+    .room-id {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 4px;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .room-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 2px;
+      margin-bottom: 16px;
+    }
+    .status-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    .status-waiting { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.2); }
+    .status-waiting .status-dot { background: var(--gold); }
+    .status-active { background: rgba(46,204,113,0.1); color: var(--green); border: 1px solid rgba(46,204,113,0.2); }
+    .status-active .status-dot { background: var(--green); }
+    .status-finished { background: rgba(136,136,136,0.1); color: var(--muted); border: 1px solid var(--border); }
+    .status-finished .status-dot { background: var(--muted); animation: none; }
+
+    .room-debaters {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .room-debaters strong { color: var(--text); }
+    .room-topic {
+      font-size: 0.8rem;
+      color: var(--muted);
+      font-style: italic;
+      border-left: 2px solid var(--border);
+      padding-left: 12px;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    .empty-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--muted);
+    }
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+    .empty-state h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      color: var(--border);
+      margin-bottom: 8px;
+    }
+
+    .join-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .join-modal.open { display: flex; }
+    .modal-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 40px;
+      max-width: 400px;
+      width: 90%;
+    }
+    .modal-box h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      margin-bottom: 8px;
+    }
+    .modal-box p { color: var(--muted); font-size: 0.9rem; margin-bottom: 24px; }
+    .modal-input {
+      width: 100%;
+      background: var(--mid);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      outline: none;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .modal-input:focus { border-color: var(--red); }
+    .modal-actions { display: flex; gap: 12px; }
+    .modal-cancel {
+      flex: 1;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      padding: 12px;
+      cursor: pointer;
+    }
+    .modal-join {
+      flex: 2;
+      background: var(--red);
+      border: none;
+      color: white;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 3px;
+      padding: 12px;
+      cursor: pointer;
+    }
+    .share-code {
+      background: var(--mid);
+      border: 1px solid var(--border);
+      padding: 16px;
+      text-align: center;
+      margin-top: 24px;
+    }
+    .share-code p { font-size: 0.7rem; letter-spacing: 2px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; }
+    .code-display {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      letter-spacing: 8px;
+      color: var(--gold);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">Debate<span>X</span></div>
+    <div class="nav-right">
+      <div class="user-chip">
+        <div class="avatar"><%= username[0].toUpperCase() %></div>
+        <span><%= username %></span>
+      </div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">The <span>Arena</span></h1>
+        <p class="page-sub">Join an existing debate or create a new one</p>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <button class="create-btn" style="background:var(--card);border:1px solid var(--border);color:var(--text);" onclick="openJoinModal()">Join by Code</button>
+        <button class="create-btn" onclick="createRoom()">+ Create Room</button>
+      </div>
+    </div>
+
+    <p class="section-label">Live Rooms</p>
+    <div class="rooms-grid" id="rooms-grid">
+      <div class="empty-state">
+        <div class="empty-icon">⚔️</div>
+        <h3>No Active Debates</h3>
+        <p>Create a room and challenge someone to a debate</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Join Modal -->
+  <div class="join-modal" id="join-modal">
+    <div class="modal-box">
+      <h3>Join Debate</h3>
+      <p>Enter the room code shared by your opponent</p>
+      <input class="modal-input" id="room-code-input" placeholder="XXXXXXXX" maxlength="8">
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeJoinModal()">Cancel</button>
+        <button class="modal-join" onclick="joinByCode()">Join Room</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let rooms = {};
+
+    async function loadRooms() {
+      try {
+        const res = await fetch('/api/rooms');
+        const data = await res.json();
+        renderRooms(data);
+      } catch(e) {}
+    }
+
+    function renderRooms(roomList) {
+      const grid = document.getElementById('rooms-grid');
+      if (!roomList.length) {
+        grid.innerHTML = `<div class="empty-state">
+          <div class="empty-icon">⚔️</div>
+          <h3>No Active Debates</h3>
+          <p>Create a room and challenge someone to a debate</p>
+        </div>`;
+        return;
+      }
+      grid.innerHTML = roomList.map(r => {
+        const statusClass = r.status === 'active' ? 'status-active' : r.status === 'finished' ? 'status-finished' : 'status-waiting';
+        const statusLabel = r.status === 'active' ? 'Live' : r.status === 'finished' ? 'Ended' : 'Waiting';
+        const debaterText = r.debaters.length ? r.debaters.join(' vs ') : 'Waiting for debaters...';
+        return `<div class="room-card" onclick="enterRoom('${r.id}')">
+          <div class="room-id"># ${r.id}</div>
+          <span class="room-status ${statusClass}">
+            <span class="status-dot"></span>${statusLabel}
+          </span>
+          <div class="room-debaters">Debaters: <strong>${debaterText}</strong></div>
+          ${r.topic ? `<div class="room-topic">"${r.topic.slice(0,80)}${r.topic.length > 80 ? '...' : ''}"</div>` : ''}
+        </div>`;
+      }).join('');
+    }
+
+    async function createRoom() {
+      const res = await fetch('/create-room', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) window.location.href = `/room/${data.roomId}`;
+    }
+
+    function enterRoom(id) {
+      window.location.href = `/room/${id}`;
+    }
+
+    function openJoinModal() {
+      document.getElementById('join-modal').classList.add('open');
+      document.getElementById('room-code-input').focus();
+    }
+
+    function closeJoinModal() {
+      document.getElementById('join-modal').classList.remove('open');
+    }
+
+    function joinByCode() {
+      const code = document.getElementById('room-code-input').value.trim().toUpperCase();
+      if (code.length < 6) return alert('Enter a valid room code');
+      window.location.href = `/room/${code}`;
+    }
+
+    function logout() {
+      fetch('/logout', { method: 'POST' }).then(() => window.location.href = '/');
+    }
+
+    // Auto-refresh rooms
+    loadRooms();
+    setInterval(loadRooms, 3000);
+
+    document.getElementById('room-code-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') joinByCode();
+    });
+  </script>
+</body>
+</html>

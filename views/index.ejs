@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DebateX — Enter the Arena</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red: #E63946;
+      --dark: #0a0a0a;
+      --mid: #141414;
+      --card: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #f0ede8;
+      --muted: #888;
+      --gold: #C9A84C;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    /* Background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(230,57,70,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(230,57,70,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    nav {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 72px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,10,0.9);
+      backdrop-filter: blur(12px);
+    }
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 4px;
+      color: var(--text);
+    }
+    .logo span { color: var(--red); }
+    .nav-badge {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 2px;
+    }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      gap: 80px;
+    }
+    .hero-text {
+      max-width: 480px;
+    }
+    .eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 20px;
+    }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 6vw, 6rem);
+      line-height: 0.95;
+      letter-spacing: 2px;
+      margin-bottom: 24px;
+    }
+    .hero-title em {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--red);
+    }
+    .hero-sub {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+    .features {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .feature-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+    .feature-chip::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+    }
+
+    /* Auth Card */
+    .auth-card {
+      position: relative;
+      z-index: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 60px rgba(230,57,70,0.08);
+    }
+    .auth-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--red), transparent);
+    }
+    .tab-row {
+      display: flex;
+      margin-bottom: 36px;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 12px;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+    .tab-btn.active {
+      color: var(--text);
+    }
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 2px;
+      background: var(--red);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    input {
+      width: 100%;
+      background: var(--mid);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      padding: 12px 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus {
+      border-color: var(--red);
+    }
+    .submit-btn {
+      width: 100%;
+      background: var(--red);
+      color: white;
+      border: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 3px;
+      padding: 14px;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .submit-btn:active { transform: translateY(0); }
+    .error-msg {
+      background: rgba(230,57,70,0.1);
+      border: 1px solid rgba(230,57,70,0.3);
+      color: var(--red);
+      font-size: 0.85rem;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .form-panel { display: none; }
+    .form-panel.active { display: block; }
+
+    @media (max-width: 900px) {
+      .hero { flex-direction: column; gap: 40px; }
+      .hero-text { max-width: 100%; text-align: center; }
+      .features { justify-content: center; }
+      nav { padding: 0 24px; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="logo">Debate<span>X</span></div>
+    <div class="nav-badge">AI-Powered Debates</div>
+  </nav>
+
+  <div class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">The Ultimate Debate Arena</p>
+      <h1 class="hero-title">Where <em>Ideas</em><br>Go to War</h1>
+      <p class="hero-sub">Challenge opponents in real-time. An AI Judge evaluates every argument, generates the topic, and delivers a definitive verdict. Only the best argument wins.</p>
+      <div class="features">
+        <span class="feature-chip">Real-time Debates</span>
+        <span class="feature-chip">AI Judge</span>
+        <span class="feature-chip">Live Scoring</span>
+        <span class="feature-chip">Final Verdict</span>
+      </div>
+    </div>
+
+    <div class="auth-card">
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="switchTab('login')">Login</button>
+        <button class="tab-btn" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <div id="login-panel" class="form-panel active">
+        <div class="error-msg" id="login-error"></div>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="login-username" placeholder="Enter username" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" placeholder="Enter password" autocomplete="current-password">
+        </div>
+        <button class="submit-btn" onclick="doLogin()">Enter the Arena</button>
+      </div>
+
+      <div id="register-panel" class="form-panel">
+        <div class="error-msg" id="register-error"></div>
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="reg-username" placeholder="Choose a username" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" placeholder="Choose a password" autocomplete="new-password">
+        </div>
+        <button class="submit-btn" onclick="doRegister()">Create Account</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach((b, i) => {
+        b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+      });
+      document.getElementById('login-panel').classList.toggle('active', tab === 'login');
+      document.getElementById('register-panel').classList.toggle('active', tab === 'register');
+    }
+
+    async function doLogin() {
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value;
+      const err = document.getElementById('login-error');
+      err.style.display = 'none';
+
+      if (!username || !password) { err.textContent = 'Please fill all fields'; err.style.display = 'block'; return; }
+
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (data.success) window.location.href = '/lobby';
+      else { err.textContent = data.error; err.style.display = 'block'; }
+    }
+
+    async function doRegister() {
+      const username = document.getElementById('reg-username').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const err = document.getElementById('register-error');
+      err.style.display = 'none';
+
+      if (!username || !password) { err.textContent = 'Please fill all fields'; err.style.display = 'block'; return; }
+      if (password.length < 4) { err.textContent = 'Password must be at least 4 characters'; err.style.display = 'block'; return; }
+
+      const res = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      const data = await res.json();
+      if (data.success) window.location.href = '/lobby';
+      else { err.textContent = data.error; err.style.display = 'block'; }
+    }
+
+    // Enter key support
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const loginActive = document.getElementById('login-panel').classList.contains('active');
+        if (loginActive) doLogin(); else doRegister();
+      }
+    });
+  </script>
+</body>
+</html>
